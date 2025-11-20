@@ -6,6 +6,7 @@ export const initSocket = async () =>{
         reconnectionAttempts : 'Infinity',
         timeout: 10000,
         transports: ['websocket'],
+        secure: true,
     };
     // Use environment variable or default to localhost:5000
     const BACKEND_URL = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';

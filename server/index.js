@@ -70,12 +70,21 @@ const isValidOrigin = (origin) => {
     return true;
   }
   
+  // Allow deployed frontend origins
+  const allowedOrigins = process.env.ALLOWED_ORIGINS ? process.env.ALLOWED_ORIGINS.split(',') : [];
+  if (allowedOrigins.some(allowed => origin.startsWith(allowed))) {
+    return true;
+  }
+  
   return false;
 };
 
 const io = new Server(server, {
   cors: {
     origin: (origin, callback) => {
+      // Allow requests with no origin (like mobile apps or curl requests)
+      if (!origin) return callback(null, true);
+      
       if (isValidOrigin(origin)) {
         callback(null, true);
       } else {
@@ -83,6 +92,7 @@ const io = new Server(server, {
       }
     },
     methods: ["GET", "POST"],
+    credentials: true,
   },
 });
 
